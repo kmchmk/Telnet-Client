@@ -6,21 +6,22 @@ PORT = "12076"
 
 telnetObj = telnetlib.Telnet(HOST, PORT, 5)
 
-def telnetInteract(until = "$ ", print_ = True):
-    output = telnetObj.read_until(until.encode('ascii'), timeout=2)
+def telnetInteract(until = "$ ", print_first_line = True):
+    output = telnetObj.read_until(until.encode('ascii'), timeout=5)
     output = output.splitlines()
     output = list(map(bytes.decode, output))
-    if (print_):
-        print(*output[1:-1], sep = "\n")
-    command = input(until)
+    if not print_first_line:
+        output = output[1:]
+    output = "\n".join(output)
+    command = input(output)
     telnetObj.write(command.encode('ascii') + "\n".encode('ascii'))
     return command
 
 telnetInteract("login: ")
-telnetInteract("Password: ", print_= False)
+telnetInteract("Password: ")
 
 while(True):
-    command = telnetInteract("$ ")
+    command = telnetInteract("$ ", print_first_line = False)
     if(command in ["exit", "quit"]):
         break
 
