@@ -1,4 +1,4 @@
-import telnetlib, sys, time, re
+import telnetlib, sys, time
 from threading import Thread
 
 def receive_data(telnetObj):
@@ -9,7 +9,7 @@ def receive_data(telnetObj):
                 try:
                     decodedoutput = output.decode('ascii')
                     sys.stdout.write(decodedoutput)
-                except:
+                except: # Some web contents contain non ascii values.
                     sys.stdout.write(str(output))
             else:
                 sys.stdout.flush()
@@ -18,7 +18,8 @@ def receive_data(telnetObj):
             break
 
 if(len(sys.argv) != 3):
-    raise Exception("Invalit argument count:\n Usage:\n{} <host> <port>".format(__file__)) 
+    print ("Invalit argument count.\n * Usage: python {} <host> <port>".format(__file__))
+    sys.exit(1)
 
 host = sys.argv[1]
 port = sys.argv[2]
