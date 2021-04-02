@@ -1,42 +1,49 @@
-import telnetlib, sys, _thread
-
-HOST = "6.tcp.ngrok.io"
-PORT = "17013"
-
-# HOST = 'google.com'
-# PORT = 80
-
-telnetObj = telnetlib.Telnet(HOST, PORT)
-
-# def telnetInteract(until = "$ ", print_first_line = True):
-#     output = telnetObj.read_until(until.encode('ascii'), timeout=5)
-#     output = output.splitlines()
-#     output = list(map(bytes.decode, output))
-#     if not print_first_line:
-#         output = output[1:]
-#     output = "\n".join(output)
-#     command = input(output)
-#     telnetObj.write(command.encode('ascii') + "\n".encode('ascii'))
-#     return command
-
-# telnetInteract("login: ")
-# telnetInteract("Password: ")
+import telnetlib, sys, time, re
+from threading import Thread
 
 def receive_data(telnetObj):
     while(True):
-        output = telnetObj.read_eager().decode('ascii')
-        if(output):
-            print(output)
-            # sys.stdout.write(output)
-            if('exit' in output):
-                break
+        try:
+            output = telnetObj.read_eager()
+            if(output):
+                try:
+                    decodedoutput = output.decode('ascii')
+                    sys.stdout.write(decodedoutput)
+                except:
+                    sys.stdout.write(str(output))
+            else:
+                sys.stdout.flush()
+        except:
+            print("Connection closed!")
+            break
 
-_thread.start_new_thread(receive_data, (telnetObj,))
+if(len(sys.argv) != 3):
+    raise Exception("Invalit argument count:\n Usage:\n{} <host> <port>".format(__file__)) 
+
+host = sys.argv[1]
+port = sys.argv[2]
+try:
+    telnetObj = telnetlib.Telnet(host, port, timeout=5)
+    print("Successfully connected to {}:{}".format(host, port))
+except:
+    print("Error occured while trying to connect {}:{}".format(host, port))
+    sys.exit()
+
+thread = Thread(target=receive_data, args=(telnetObj, ))
+thread.start()
 
 while(True):
-    command = input()
-    telnetObj.write(command.encode('ascii') + "\n".encode('ascii'))
-    if(command in ["exit", "quit"]):
+    try:
+        command = input()
+        telnetObj.write(command.encode('ascii') + "\n".encode('ascii'))
+        if(command in ["exit", "quit"] or thread._is_stopped):
+            break
+    except:
+        # print(sys.exc_info()[0])
+        print("Error occured!")
         break
 
+
 telnetObj.close()
+thread.join()
+print("Finished!")
