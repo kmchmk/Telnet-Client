@@ -1,3 +1,10 @@
+'''
+This code is a stripped down version of telnetlib3
+Source: https://github.com/python/cpython/blob/3.9/Lib/telnetlib.py
+
+Credit goes to original authors
+'''
+
 import sys, socket, selectors
 
 # Telnet protocol characters
@@ -34,7 +41,6 @@ class Telnet:
         self.sbdataq = b''
 
     def open(self):
-        self.eof = 0
         self.sock = socket.create_connection((self.host, self.port), self.timeout)
 
     def close(self):
@@ -46,10 +52,10 @@ class Telnet:
         if sock:
             sock.close()
 
-    def fileno(self):
+    def fileno(self): # Return the file descriptor of socket
         return self.sock.fileno()
 
-    def write(self, buffer):
+    def write(self, buffer): # Send contents via socket
         if IAC in buffer:
             buffer = buffer.replace(IAC, IAC+IAC) # Double IAC characters.
         self.sock.sendall(buffer)

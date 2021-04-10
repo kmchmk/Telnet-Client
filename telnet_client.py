@@ -42,7 +42,6 @@ while(True):
             # If user wanted to exit or if the listening thread is not running the client should stop
             break
     except:
-        # print(sys.exc_info()[0])
         print("Error occured!")
         break
 

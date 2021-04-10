@@ -9,7 +9,7 @@ python telnet_client.py <host> <port>
 
 #### Examples:
 
-##### 1. HTTP Service
+##### 1. Connect to a HTTP web server
 ```sh
 python telnet_client.py google.com 80
 
@@ -19,7 +19,7 @@ GET / HTTP/1.1
 exit
 ```
 
-##### 2. Linux backend runnnig Telnet server
+##### 2. Connect to a Linux backend runnnig Telnet server
 ```sh
 python telnet_client.py localhost 23
 
@@ -38,5 +38,6 @@ exit
 - This client is implemented using a stripped down version of [telnetlib3](https://pypi.org/project/telnetlib3/) library.
 
 Refer:
-- [Telnetlib3 python docs](https://docs.python.org/3/library/telnetlib.html).
+- [Telnetlib3 python docs](https://docs.python.org/3/library/telnetlib.html)
+- [Telnetlib3 python source](https://github.com/python/cpython/blob/3.9/Lib/telnetlib.py)
 - [Telnet protocol specification](https://tools.ietf.org/html/rfc854)
