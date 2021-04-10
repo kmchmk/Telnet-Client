@@ -4,7 +4,7 @@ from threading import Thread
 def receive_data(telnetObj): # For a separate thread
     while(True):
         try:
-            output = telnetObj.read_eager() # Read readily available data
+            output = telnetObj.read_content() # Read readily available data
             if(output):
                 try:
                     decodedoutput = output.decode('ascii')
@@ -25,9 +25,10 @@ host = sys.argv[1]
 port = sys.argv[2]
 try:
     telnetObj = telnetlib.Telnet(host, port, timeout=5) # Initiate
+    telnetObj.open()
     print("Successfully connected to {}:{}".format(host, port))
 except: # If incorrect host and port were given or any network issue occured
-    print("Error occured while trying to connect {}:{}".format(host, port))
+    print("Error occured / connection timed out while trying to connect {}:{}".format(host, port))
     sys.exit(1)
 
 thread = Thread(target=receive_data, args=(telnetObj, )) # Create a new thread to listen
